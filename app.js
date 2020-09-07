@@ -10,3 +10,5 @@ app.set('view engine', 'hbs')
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
 })
+
+require('./routes')(app)
