@@ -1,0 +1,18 @@
+<div class='card'>
+  <div class='row'>
+    <div class="col-md-4">
+      <img src="{{profile.image}}" style="width: 250px" alt="">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{profile.name}}</h5>
+        <p class="card-text">{{profile.email}}</p>
+        {{#ifCond profile.id user.id}}
+        <a href="/users/{{profile.id}}/edit">
+          <button type='submit' class='btn btn-primary'>edit</button>
+        </a>
+        {{/ifCond}}
+      </div>
+    </div>
+  </div>
+</div>
