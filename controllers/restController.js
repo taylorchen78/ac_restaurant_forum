@@ -51,6 +51,9 @@ const restController = {
         { model: Comment, include: [User] }
       ]
     }).then(restaurant => {
+      restaurant.viewCounts += 1
+      restaurant.save()
+
       return res.render('restaurant', {
         restaurant: restaurant.toJSON()
       })
@@ -85,7 +88,6 @@ const restController = {
         { model: Comment, include: [User] }
       ]
     }).then(restaurant => {
-      console.log(restaurant.toJSON())
       return res.render('dashboard', { restaurant: restaurant.toJSON() })
     })
   }
