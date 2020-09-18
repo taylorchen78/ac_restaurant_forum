@@ -14,6 +14,6 @@
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "CLEARDB_JADE_URL"
+    "use_env_variable": "CLEARDB_BLACK_URL"
   }
 }
