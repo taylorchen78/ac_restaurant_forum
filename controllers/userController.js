@@ -56,14 +56,17 @@ const userController = {
         { model: Comment, include: [Restaurant] }
       ]
     }).then(user => {
-      console.log(user.toJSON())
       return res.render('user/profile', { profile: user.toJSON() })
     })
   },
   editUser: (req, res) => {
-    return User.findByPk(req.params.id, { raw: true, nest: true }).then(user => {
-      return res.render('user/edit')
-    })
+    if (req.user.id !== Number(req.params.id)) {
+      return res.redirect(`/users/${req.user.id}/edit`)
+    } else {
+      return User.findByPk(req.params.id, { raw: true, nest: true }).then(user => {
+        return res.render('user/edit')
+      })
+    }
   },
   putUser: (req, res) => {
     const { file } = req
