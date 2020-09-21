@@ -9,13 +9,18 @@ let categoryController = {
       return res.json(data)
     })
   },
-  deleteCategory: (req, res) => {
-    categoryService.deleteCategory(req, res, (data) => {
+  postCategory: (req, res) => {
+    categoryService.postCategory(req, res, (data) => {
       return res.json(data)
     })
   },
-  postCategory: (req, res) => {
-    categoryService.postCategory(req, res, (data) => {
+  putCategory: (req, res) => {
+    categoryService.putCategory(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+  deleteCategory: (req, res) => {
+    categoryService.deleteCategory(req, res, (data) => {
       return res.json(data)
     })
   }
