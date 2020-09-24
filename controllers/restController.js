@@ -3,6 +3,7 @@ const Restaurant = db.Restaurant
 const Category = db.Category
 const Comment = db.Comment
 const User = db.User
+const Favorite = db.Favorite
 
 const pageLimit = 10
 
@@ -101,10 +102,28 @@ const restController = {
     })
   },
   getTopRestaurant: (req, res) => {
+    const sequelize = require('sequelize')
+
     return Restaurant.findAll({
       include: [
         { model: User, as: 'FavoritedUsers' }
-      ]
+      ],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(`(
+                    SELECT COUNT(DISTINCT UserId)
+                    FROM Favorites
+                    WHERE Restaurant.id = Favorites.RestaurantId
+                )`),
+            'favoriteCounts'
+          ]
+        ]
+      },
+      order: [
+        [sequelize.literal('favoriteCounts'), 'DESC']
+      ],
+      limit: 10
     }).then(restaurants => {
       restaurants = restaurants.map(r => ({
         ...r.dataValues,
@@ -113,7 +132,6 @@ const restController = {
         FavoriteCounts: r.FavoritedUsers.length
       }))
 
-      restaurants = restaurants.sort((a, b) => b.FavoriteCounts - a.FavoriteCounts).slice(0, 10)
       return res.render('topRestaurant', { restaurants: restaurants })
     })
   }
