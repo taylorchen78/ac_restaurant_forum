@@ -4,6 +4,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
+const User = db.User
 
 const adminService = {
   getRestaurants: (req, res, callback) => {
@@ -100,6 +101,36 @@ const adminService = {
           })
         })
     }
+  },
+  createRestaurant: (req, res, callback) => {
+    Category.findAll({ raw: true }).then(categories => {
+      callback({ categories: categories })
+    })
+  },
+  editRestaurant: (req, res, callback) => {
+    Category.findAll({ raw: true }).then(categories => {
+      return Restaurant.findByPk(req.params.id, { raw: true }).then(restaurant => {
+        callback({ categories: categories, restaurant: restaurant })
+      })
+    })
+  },
+  getUsers: (req, res, callback) => {
+    return User.findAll({ raw: true }).then(users => {
+      callback({ users: users })
+    })
+  },
+  putUsers: (req, res, callback) => {
+    return User.findByPk(req.params.id)
+      .then((user) => {
+        if (user.name === 'root') {
+          callback({ status: 'error', message: 'root\'s permission cannot be change' })
+        } else {
+          user.update({ isAdmin: user.isAdmin ? false : true })
+            .then(() => {
+              callback({ status: 'success', message: 'user was successfully to update' })
+            })
+        }
+      })
   }
 }
 

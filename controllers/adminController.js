@@ -1,13 +1,4 @@
-const fs = require('fs')
-const db = require('../models')
-const Restaurant = db.Restaurant
-const User = db.User
-const Category = db.Category
-
 const adminService = require('../services/adminService.js')
-
-const imgur = require('imgur-node-api')
-const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -16,10 +7,8 @@ const adminController = {
     })
   },
   createRestaurant: (req, res) => {
-    Category.findAll({ raw: true }).then(categories => {
-      return res.render('admin/create', {
-        categories: categories
-      })
+    adminService.createRestaurant(req, res, (data) => {
+      return res.render('admin/create', data)
     })
   },
   postRestaurant: (req, res) => {
@@ -38,12 +27,8 @@ const adminController = {
     })
   },
   editRestaurant: (req, res) => {
-    Category.findAll({ raw: true }).then(categories => {
-      return Restaurant.findByPk(req.params.id, { raw: true }).then(restaurant => {
-        return res.render('admin/create', {
-          categories: categories, restaurant: restaurant
-        })
-      })
+    adminService.editRestaurant(req, res, (data) => {
+      return res.render('admin/create', data)
     })
   },
   putRestaurant: (req, res) => {
@@ -64,19 +49,17 @@ const adminController = {
     })
   },
   getUsers: (req, res) => {
-    return User.findAll({ raw: true }).then(users => {
-      return res.render('admin/users', { users: users })
+    adminService.getUsers(req, res, (data) => {
+      return res.render('admin/users', data)
     })
   },
   putUsers: (req, res) => {
-    return User.findByPk(req.params.id)
-      .then((user) => {
-        user.update({ isAdmin: user.isAdmin ? false : true })
-          .then(() => {
-            req.flash('success_messages', 'user was successfully to update')
-            res.redirect('/admin/users')
-          })
-      })
+    adminService.putUsers(req, res, (data) => {
+      if (data['status'] === 'success') {
+        req.flash('success_messages', data['message'])
+        res.redirect('/admin/users')
+      }
+    })
   }
 }
 
